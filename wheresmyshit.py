@@ -20,7 +20,7 @@ def process_message(data):
     if not data.has_key('text'):
         return
 
-    if data.get('subtype') in {'channel_leave','channel_join'}:
+    if data.has_key('subtype'):
         return
 
     text = data['text']
