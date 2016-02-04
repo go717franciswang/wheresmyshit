@@ -24,12 +24,7 @@ def process_message(data):
     channel = data['channel']
 
     if channel.startswith("D"):
-        if text == 'help':
-            outputs.append([channel, 'show // display all items\n'+
-                                     'track [ups|usps] [tracking_id] // track an item\n'+
-                                     'remove [tracking_id] // untrack an item\n'+
-                                     'help // display this message'])
-        elif text == 'show':
+        if text == 'show':
             show_items(channel)
         elif text.startswith('track'):
             m = re.match('track\s+(ups|usps)\s+(\S+)', text)
@@ -51,6 +46,8 @@ def process_message(data):
                     outputs.append([channel, 'removed'])
                 else:
                     outputs.append([channel, 'item does not exist'])
+        else:
+            help(channel)
     pickle.dump(items, open(FILE, 'wb'))
 
 def track_item(item):
@@ -101,3 +98,10 @@ def refresh_items():
             next
         track_item(item)
 
+def help(channel):
+    msg = '```'
+    msg += 'show                                // display all items\n'
+    msg += 'track [ups|usps] [tracking_id]      // track an item\n'
+    msg += 'remove [tracking_id]                // untrack an item\n'
+    msg += '```'
+    outputs.append([channel, msg])
