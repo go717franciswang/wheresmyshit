@@ -20,10 +20,13 @@ def process_message(data):
     if not data.has_key('text'):
         return
 
+    if data.get('subtype') in {'channel_leave','channel_join'}:
+        return
+
     text = data['text']
     channel = data['channel']
 
-    if channel.startswith("D"):
+    if channel.startswith("D") or channel.startswith("C"):
         if text == 'show':
             show_items(channel)
         elif text.startswith('track'):
