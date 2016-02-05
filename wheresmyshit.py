@@ -95,10 +95,10 @@ def show_items(channel):
 
 def refresh_items():
     for _id, item in items.iteritems():
-        if item['error']:
-            next
-        if 'delivered' in item['progress'][0]['activity']:
-            next
+        if item['error'] or not item.has_key('progress'):
+            continue
+        if 'delivered' in item['progress'][0]['activity'].lower():
+            continue
         track_item(item)
 
 def help(channel):

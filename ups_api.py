@@ -9,7 +9,7 @@ def fetch_progress(tracking_id):
     soup = BeautifulSoup(c, 'lxml')
     progress = []
 
-    if 'Delivered' in c:
+    if 'Delivered On' in c:
         t = soup.find('label', text='Delivered On:').find_parent('dl').find('dd')
         t = col2text(t)
         t = t.replace('P.M.', 'PM').replace('A.M.', 'AM')
@@ -20,6 +20,16 @@ def fetch_progress(tracking_id):
             'loc': loc,
             'datetime': t,
             'activity': 'Delivered'
+        })
+    elif 'Label Created On' in c:
+        t = soup.find('label', text='Label Created On:').find_parent('dl').find('dd')
+        t = col2text(t)
+        t = t.replace('P.M.', 'PM').replace('A.M.', 'AM')
+        t = dateutil.parser.parse(t)
+        progress.append({
+            'loc': '',
+            'datetime': t,
+            'activity': 'Label Created'
         })
     else:
         rows = soup.find('table').find_all('tr')[1:]
