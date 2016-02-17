@@ -32,7 +32,8 @@ def fetch_progress(tracking_id):
             'activity': 'Label Created'
         })
     else:
-        rows = soup.find('table').find_all('tr')[1:]
+        table = soup.find('th', text='Location').find_parent('table')
+        rows = table.find_all('tr')[1:]
         for row in rows:
             c1,c2,c3,c4 = row.find_all('td')
             loc = col2text(c1)
