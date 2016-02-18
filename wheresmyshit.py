@@ -49,7 +49,7 @@ def process_message(data):
                     outputs.append([channel, 'removed'])
                 else:
                     outputs.append([channel, 'item does not exist'])
-        else:
+        elif channel.startswith('D') or text == 'help':
             help(channel)
     pickle.dump(items, open(FILE, 'wb'))
 
