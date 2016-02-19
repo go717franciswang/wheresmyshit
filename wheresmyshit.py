@@ -4,6 +4,9 @@ import usps_api
 import os
 import pickle
 import datetime
+import copy
+import client
+import json
 
 crontable = []
 outputs = []
@@ -35,6 +38,9 @@ def process_message(data):
                 carrier = m.group(1)
                 tracking_id = m.group(2)
                 item = items.get(tracking_id, {'carrier': carrier, 'tracking_id': tracking_id, 'user': data['user']})
+                if channel.startswith('D'):
+                    item['direct channel'] = channel
+
                 track_item(item)
                 items[tracking_id] = item
                 show_items(channel)
@@ -99,7 +105,14 @@ def refresh_items():
             continue
         if 'delivered' in item['progress'][0]['activity'].lower():
             continue
+        old_item = copy.deepcopy(item)
         track_item(item)
+        if old_item != item:
+            if item.get('direct channel') is None:
+                j = client.api_client.api_call('im.open', user=item['user'])
+                item['direct channel'] = json.loads(j)['channel']['id']
+            show_items(item.get('direct channel'))
+    pickle.dump(items, open(FILE, 'wb'))
 
 def help(channel):
     msg = '```'
